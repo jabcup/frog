@@ -32,7 +32,8 @@ def create_user(user: UserCreate):
         raise HTTPException(status_code=500, detail=f"error al crear usuario: {str(e)}")
 
     # print(user)
-    return user
+    token = create_access_token(data={"sub": str(user_to_add.id)})
+    return {"user": user, "token": token}
 
 
 @router.post("/login")
