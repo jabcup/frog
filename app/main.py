@@ -3,6 +3,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from app.auth import get_current_user
 from .routers.users import router as users_router
 from .routers.payment import router as payment_router
+from .routers.projects import router as project_router
 from fastapi.middleware.cors import CORSMiddleware
 
 origins = ["http://localhost:3000", "http://localhost:5173"]
@@ -19,6 +20,7 @@ app.add_middleware(
 
 app.include_router(users_router, prefix="/users")
 app.include_router(payment_router, prefix="/access")
+app.include_router(project_router, prefix="/home")
 
 
 @app.get("/me")
