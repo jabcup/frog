@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from jose import jwt, JWTError
 from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from bcrypt import gensalt, hashpw, checkpw
 
 SECRET_KEY = "12345"
 ALGORITHM = "HS256"
@@ -28,3 +29,14 @@ def get_current_user(creds: HTTPAuthorizationCredentials = Depends(security)):
 
     except JWTError:
         raise HTTPException(status_code=401, detail="Token inválido")
+
+
+def hash_pass(passw: str) -> str:
+    oct = passw.encode("utf-8")
+    salt = gensalt(rounds=12)
+    hashed_pw = hashpw(oct, salt)
+    return hashed_pw.decode()
+
+
+def check_pass(passw: str, storedpw: str) -> bool:
+    return checkpw(passw.encode("utf-8"), storedpw.encode("utf-8"))

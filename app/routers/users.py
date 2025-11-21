@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.schemas.user_schemas import UserCreate, LoginReq, LoginRes
 from app.db.session import SessionLocal
 from app.db.models import Usuario
-from app.auth import create_access_token
+from app.auth import create_access_token, hash_pass, check_pass
 
 router = APIRouter(tags=["users"])
 
@@ -16,7 +16,7 @@ def create_user(user: UserCreate):
         nombre=user.nombre,
         apellidos=user.apellidos,
         email=user.email,
-        key=user.key,
+        key=hash_pass(user.key),
         fecha_nacimiento=user.fecha_nacimiento,
         estado=1,
         rol_id=3,
@@ -40,15 +40,15 @@ def create_user(user: UserCreate):
 def get_user(user: LoginReq):
     try:
         with SessionLocal() as session:
-            user_to_log = select(Usuario).where(
-                and_(Usuario.email == user.email, Usuario.key == user.key)
-            )
+            user_to_log = select(Usuario).where(and_(Usuario.email == user.email))
             user_to_log = session.scalar(user_to_log)
 
         if user_to_log is None:
             raise HTTPException(status_code=401, detail="Datos incorrectos")
-        token = create_access_token(data={"sub": str(user_to_log.id)})
-        return {"user": user_to_log, "access_token": token}
+
+        if check_pass(user.key, user_to_log.key):
+            token = create_access_token(data={"sub": str(user_to_log.id)})
+            return {"user": user_to_log, "access_token": token}
     except SQLAlchemyError as sae:
         print("Error en la base de datos: ", sae)
         raise HTTPException(status_code=500, detail="Error en la base de datos")
