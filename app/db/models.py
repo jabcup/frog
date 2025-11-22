@@ -1,5 +1,7 @@
 # esta es la base de todos los modelos, supuestamente le dice "che esto es una tabla"
+from decimal import Decimal
 from enum import auto
+from pydantic import EmailStr
 from sqlalchemy import (
     Column,
     Integer,
@@ -44,6 +46,7 @@ class Usuario(Base):
     rol = relationship("Rol", back_populates="usuarios")
     pagos = relationship("Pago", back_populates="usuario")
     proyectos = relationship("Proyecto", back_populates="usuario")
+    factura = relationship("Factura", back_populates="usuario")
 
 
 class Pago(Base):
@@ -218,3 +221,31 @@ class Enlace(Base):
     proyecto = relationship("Proyecto", back_populates="enlaces")
     origen = Column(Integer, nullable=False)
     destino = Column(Integer, nullable=False)
+
+
+class Factura(Base):
+    __tablename__ = "factura"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    usuario_id = Column(Integer, ForeignKey("usuario.id", ondelete="SET NULL"))
+    usuario = relationship("Usuario", back_populates="factura", uselist=False)
+    nit = Column(Integer, nullable=False)  # validar esto con pydantic
+    fecha_hora = Column(DateTime, default=datetime.now, nullable=False)
+    concepto = Column(
+        String(255),
+        default="Suscripción de usuario a producto de investigación",
+        nullable=False,
+    )
+    monto = Column(Numeric(5, 2), nullable=False)
+    correo_destino = Column(String(150))
+    cliente = Column(String(255))  # el nombre del cliente de la factura
+    codigos = relationship("Codigo", back_populates="factura", uselist=False)
+
+
+class Codigo(Base):
+    __tablename__ = "codigo"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    fecha_hora = Column(DateTime, default=datetime.now)
+    factura_id = Column(Integer, ForeignKey("factura.id", ondelete="CASCADE"))
+    factura = relationship("Factura", back_populates="codigos")
