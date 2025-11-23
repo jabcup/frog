@@ -39,3 +39,17 @@ class EnlaceCreate(BaseModel):
     destino: int = Field(...)
     tipo_origen: str = Field(..., max_length=50)
     tipo_destino: str = Field(..., max_length=50)
+
+
+class CodigoCreate(BaseModel):
+    factura_id: int = Field(...)
+    banco: str = Field(max_length=20)
+    impuesto: str = Field(max_length=20)
+    contab: str = Field(max_length=20)
+
+
+class EtiquetaCreate(BaseModel):
+    id_proyecto: int = Field(...)
+    nombre: str = Field(..., max_length=50)
+    descripcion: str = Field(max_length=150)
+    color: str = Field(default="#404040")

@@ -253,3 +253,6 @@ class Codigo(Base):
     fecha_hora = Column(DateTime, default=datetime.now)
     factura_id = Column(Integer, ForeignKey("factura.id", ondelete="CASCADE"))
     factura = relationship("Factura", back_populates="codigos")
+    banco = Column(String(20), nullable=True)
+    impuesto = Column(String(20), nullable=True)
+    contab = Column(String(20), nullable=True)

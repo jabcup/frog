@@ -1,10 +1,23 @@
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import select, and_
 from sqlalchemy.exc import SQLAlchemyError
-from app.db.models import Dato, Enlace, Proyecto, Evento, Recurso, Tarea, TipoRecurso
+from app.db.models import (
+    Codigo,
+    Dato,
+    Enlace,
+    Etiqueta,
+    Proyecto,
+    Evento,
+    Recurso,
+    Tarea,
+    TipoRecurso,
+    Factura,
+)
 from app.schemas.general_schemas import (
+    CodigoCreate,
     DatoCreate,
     EnlaceCreate,
+    EtiquetaCreate,
     RecursoCreate,
     TareaCreate,
     EventoCreate,
@@ -156,3 +169,54 @@ def new_link(nuevo_enlace: EnlaceCreate):
         print(
             "error encontrando el proyecto ", e
         )  # se que no hay que hacerlo con print pero luego lo arreglo
+
+
+@router.post("/new_code")
+def new_code(nuevo_codigo: CodigoCreate):
+    try:
+        with SessionLocal() as get_project:
+            factura_en_cuestion = get_project.get(Factura, nuevo_codigo.factura_id)
+
+        data_to_add = Codigo(
+            factura=factura_en_cuestion,
+            banco=nuevo_codigo.banco,
+            impuesto=nuevo_codigo.impuesto,
+            contab=nuevo_codigo.contab,
+        )
+
+        try:
+            with SessionLocal() as session:
+                session.add(data_to_add)
+                session.commit()
+
+            return {"resultao": "correcto papacho, nuevo dato dateado en la data"}
+        except:  # tambien se que no hay que ponerle except crudo pero por ahora sirve
+            print("error creando los datos")
+    except SQLAlchemyError as e:
+        print(
+            "error encontrando el proyecto ", e
+        )  # se que no hay que hacerlo con print pero luego lo arreglo
+
+
+@router.post("/new_tag")
+def new_tag(nueva_etiqueta: EtiquetaCreate):
+    try:
+        with SessionLocal() as get_project:
+            proyecto_en_cuestion = get_project.get(Proyecto, nueva_etiqueta.id_proyecto)
+
+        tag = Etiqueta(
+            proyecto=proyecto_en_cuestion,
+            nombre=nueva_etiqueta.nombre,
+            descripcion=nueva_etiqueta.descripcion,
+            color=nueva_etiqueta.color,
+        )
+        try:
+            with SessionLocal() as session:
+                session.add(tag)
+                session.commit()
+
+            return {"resultao": "correcto papacho, nuevo dato dateado en la data"}
+        except:  # tambien se que no hay que ponerle except crudo pero por ahora sirve
+            print("error creando los datos")
+    except SQLAlchemyError as e:
+        print("error encontrando el proyecto ", e)  #
