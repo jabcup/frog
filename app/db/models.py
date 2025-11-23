@@ -221,6 +221,8 @@ class Enlace(Base):
     proyecto = relationship("Proyecto", back_populates="enlaces")
     origen = Column(Integer, nullable=False)
     destino = Column(Integer, nullable=False)
+    tipo_origen = Column(String(50), nullable=False)
+    tipo_destino = Column(String(50), nullable=False)
 
 
 class Factura(Base):

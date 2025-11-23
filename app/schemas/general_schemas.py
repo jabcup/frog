@@ -23,4 +23,19 @@ class EventoCreate(BaseModel):
 class TareaCreate(EventoCreate):
     tipo: Literal["tarea"] = "tarea"
     importancia: int
-    estado: bool = False
+    estado: bool = Field(default=False)
+
+
+class RecursoCreate(BaseModel):
+    id_proyecto: int = Field(...)
+    id_tipo: int = Field(default=2)
+    relevancia: int
+    url: str = Field(default="ninguna", max_length=255)
+
+
+class EnlaceCreate(BaseModel):
+    id_proyecto: int = Field(...)
+    origen: int = Field(...)
+    destino: int = Field(...)
+    tipo_origen: str = Field(..., max_length=50)
+    tipo_destino: str = Field(..., max_length=50)
