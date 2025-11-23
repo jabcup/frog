@@ -227,7 +227,9 @@ class Factura(Base):
     __tablename__ = "factura"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    usuario_id = Column(Integer, ForeignKey("usuario.id", ondelete="SET NULL"))
+    usuario_id = Column(
+        Integer, ForeignKey("usuario.id", ondelete="SET NULL"), nullable=True
+    )
     usuario = relationship("Usuario", back_populates="factura", uselist=False)
     nit = Column(Integer, nullable=False)  # validar esto con pydantic
     fecha_hora = Column(DateTime, default=datetime.now, nullable=False)

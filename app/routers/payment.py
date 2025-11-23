@@ -5,7 +5,7 @@ from app.schemas.payment_schemas import PaymentGet
 
 # debo tener un modelo pydantic que valide el usuario? creo que sí no? o lo manejo con la session
 from app.db.session import SessionLocal
-from app.db.models import Usuario
+from app.db.models import Factura, Usuario
 
 # from app.schemas.user_schemas import
 from app.auth import (
@@ -26,6 +26,15 @@ def generate_payment(
         with SessionLocal() as session:
             user.rol_id = 1
             session.add(user)
+            factura = Factura(
+                usuario=user,
+                nit=payment_data.nit,
+                concepto=payment_data.concepto,
+                monto=payment_data.monto,
+                correo_destino=payment_data.correo,
+                cliente=payment_data.cliente,
+            )
+            session.add(factura)
             session.commit()
 
         return 1

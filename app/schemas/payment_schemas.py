@@ -6,8 +6,11 @@ from pydantic import BaseModel, Field, EmailStr
 
 
 class PaymentGet(BaseModel):
-    nombres: str
-    apellidos: str
+    cliente: str = Field(max_length=255)
+    correo: EmailStr = Field(max_length=150)
     cvv: int = Field(...)
     fecha_exp: str
     cc: str = Field(..., min_length=13, max_length=19)
+    concepto: str = Field(..., max_length=255)
+    monto: float
+    nit: int = Field(...)
