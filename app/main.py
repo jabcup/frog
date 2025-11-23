@@ -6,6 +6,7 @@ from .routers.payment import router as payment_router
 from .routers.projects import router as project_router
 from .routers.info import router as info_router
 from .routers.list_info import router as list_router
+from .routers.show_info import router as show_router
 from fastapi.middleware.cors import CORSMiddleware
 
 origins = ["http://localhost:3000", "http://localhost:5173"]
@@ -25,6 +26,7 @@ app.include_router(payment_router, prefix="/access")
 app.include_router(project_router, prefix="/home")
 app.include_router(info_router, prefix="/content")
 app.include_router(list_router, prefix="/content")
+app.include_router(show_router, prefix="/content")
 
 
 @app.get("/me")
