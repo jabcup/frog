@@ -132,6 +132,8 @@ class Recurso(Base):
     tipo_recurso_id = Column(
         Integer, ForeignKey("tipo_recurso.id", ondelete="RESTRICT")
     )
+    nombre = Column(String(100), nullable=True)
+    descripcion = Column(String(155), nullable=True)
     proyecto = relationship("Proyecto", back_populates="recursos")
     tipo = relationship("TipoRecurso", back_populates="recursos")
     relevancia = Column(Integer, nullable=True, default=0)

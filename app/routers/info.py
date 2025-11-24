@@ -124,6 +124,8 @@ def new_res(nuevo_recurso: RecursoCreate):
 
         data_to_add = Recurso(
             proyecto=project,
+            nombre=nuevo_recurso.nombre,
+            descripcion=nuevo_recurso.descripcion,
             tipo=tipo_r,
             relevancia=nuevo_recurso.relevancia,
             url=nuevo_recurso.url,

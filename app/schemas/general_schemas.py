@@ -29,6 +29,8 @@ class TareaCreate(EventoCreate):
 class RecursoCreate(BaseModel):
     id_proyecto: int = Field(...)
     id_tipo: int = Field(default=2)
+    nombre: str = Field(max_length=100, default="Recurso")
+    descripcion: str = Field(max_length=155)
     relevancia: int
     url: str = Field(default="ninguna", max_length=255)
 
